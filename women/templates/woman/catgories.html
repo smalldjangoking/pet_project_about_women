@@ -1,0 +1,24 @@
+{% extends 'woman/base.html' %}
+
+{% block title %}Категория: {{ title }} {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row col-9">
+            {% for act in posts %}
+                {% if act.is_published %}
+                    <div class="row col-12 mt-4">
+                        <div class="col"><h3 class="h3">{{ act.title }}</h3>
+                            {{ act.content|linebreaks|truncatewords:20 }}</div>
+                    </div>
+                    <div class="row col-12 bg-color">
+                        <div class="col mt-1"><p>Категория: {{ act.cat }}</p></div>
+                        <div class="col mt-1"><p>Дата: {{ act.time_update|date:"d-m-Y H:i:s" }}</p></div>
+                        <div class="col mt-1"><a type="button" class="btn btn-dark" href="{{ act.get_absolute_url }}">Читать пост</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

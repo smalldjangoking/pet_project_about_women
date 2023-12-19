@@ -1,0 +1,8 @@
+{% extends 'woman/base.html' %}
+
+{% block title %}Статья о {{ title }}| Woman{% endblock %}
+
+{% block body %}
+            <h4>{{ title }}</h4>
+            {{ content|linebreaks }}
+{% endblock %}

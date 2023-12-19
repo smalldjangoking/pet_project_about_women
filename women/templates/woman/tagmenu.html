@@ -1,0 +1,18 @@
+<ul id="leftchapters">
+    {% if cat_selected == 0 %}
+        <li>>Все Категории</li>
+    {% else %}
+        <li><a href="/">Все Категории</a></li>
+    {% endif %}
+
+    {% for post in tagmenu %}
+        {% if cat_selected == post.pk %}
+            <li class="active">{{ post }}</li>
+        {% else %}
+        <li><a href="{{ post.get_absolute_url }}">{{ post }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+
+
