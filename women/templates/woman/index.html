@@ -7,12 +7,17 @@
                 {% if act.is_published %}
                     <div class="row col-12 mt-4">
                         <div class="col"><h3 class="h3">{{ act.title }}</h3>
+                            {% if act.img_file %}
+                                <img class="img-article-list" src="{{ act.img_file.url }}"
+                                     alt="Фотография {{ title }}">
+                            {% endif %}
                             {{ act.content|linebreaks|truncatewords:30 }}</div>
                     </div>
                     <div class="row col-12 bg-color">
                         <div class="col mt-1"><p>Категория: {{ act.cat }}</p></div>
                         <div class="col mt-1"><p>Дата: {{ act.time_update|date:"d-m-Y H:i:s" }}</p></div>
-                        <div class="col mt-1"><a type="button" class="btn btn-dark" href="{{ act.get_absolute_url }}">Читать пост</a>
+                        <div class="col mt-1"><a type="button" class="btn btn-dark" href="{{ act.get_absolute_url }}">Читать
+                            пост</a>
                         </div>
                     </div>
                 {% endif %}

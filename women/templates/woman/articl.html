@@ -1,8 +1,18 @@
 {% extends 'woman/base.html' %}
 
-{% block title %}Статья о {{ title }}| Woman{% endblock %}
+{% block title %}Статья о {{ data.title }}| Woman{% endblock %}
 
 {% block body %}
-            <h4>{{ title }}</h4>
-            {{ content|linebreaks }}
+    {% if data.img_file %}
+        <img class="img-article-left" src="{{ data.img_file.url }}" alt="Фотография {{ title }}">
+    {% endif %}
+    {% with data.tag.all as tags %}
+        {% if tags %}
+            {% for tag in tags %}
+                <a class="btn btn-secondary mt-1 ml-1" href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <h2 class="h2">{{ data.title }}</h2>
+    {{ data.content|linebreaks }}
 {% endblock %}

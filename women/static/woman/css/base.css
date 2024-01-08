@@ -1,3 +1,23 @@
 .bg-color  {
 background-color: darkgray;
 }
+
+.img-article-left {
+	max-width: 300px;
+	height: auto;
+	float: left;
+	padding: 0 10px 10px 0;
+}
+
+.img-article-list {
+	max-width: 155px;
+	height: auto;
+	float: left;
+	padding: 0 10px 10px 0;
+}
+
+.form-label {
+    display: inline-block;
+    min-width: 125px;
+    vertical-align: top;
+}
