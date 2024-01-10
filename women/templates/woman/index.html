@@ -22,6 +22,24 @@
                     </div>
                 {% endif %}
             {% endfor %}
+            <div class="nav-paginator">
+                <ul>
+                    {% if page_obj.has_previous %}
+                        <li class="li-paginator" onclick="location.href='?page={{ page_obj.previous_page_number }}'"><
+                        </li>
+                    {% endif %}
+                    {% for p in paginator.page_range %}
+                        {% if page_obj.number == p %}
+                            <li class="li-paginator-active">{{ p }}</li>
+                        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                            <li class="li-paginator" onclick="location.href='?page={{ p }}'">{{ p }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="li-paginator" onclick="location.href='?page={{ page_obj.next_page_number }}'">></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

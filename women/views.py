@@ -1,29 +1,20 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, ListView, DetailView
-
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 from .forms import Addpostform
+from .mixins import DataMixin
 from .models import Category, Women, TagPost
 
 
-class MainIndex(TemplateView):
+class MainIndex(DataMixin, ListView):
     template_name = 'woman/index.html'
+    title_context = 'Главная Страница'
+    context_object_name = 'data'
+    paginate_by = 3
+    def get_queryset(self):
+        return Women.published.all().select_related('cat')
 
-    extra_context = {
-        'cat_selected': 0,
-        'title': 'Главная Страница',
-        'data': Women.published.all()
-    }
-
-
-#def articls(request, art_slug):
-#    art_get = get_object_or_404(Women, slug=art_slug)
-#    context = {
-#        'title': art_get.title,
-#        'content': art_get.content,
-#        'art_all': art_get
-#    }
-#    return render(request, 'woman/articl.html', context=context)
 
 class ArticlView(DetailView):
     model = Women
@@ -35,10 +26,11 @@ class ArticlView(DetailView):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class CategoriesView(ListView):
+class CategoriesView(DataMixin, ListView):
     template_name = 'woman/catgories.html'
     context_object_name = 'posts'
     allow_empty = False
+    paginate_by = 3
 
     def get_queryset(self):
         return Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
@@ -46,12 +38,10 @@ class CategoriesView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cat = context['posts'][0].cat
-        context['title'] = cat.name
-        context["cat_selected"] = cat.pk
-        return context
+        return self.get_mixin_context(context, title=cat.name, cat_selected=cat.pk)
 
 
-class TagView(ListView):
+class TagView(DataMixin, ListView):
     template_name = 'woman/index.html'
     context_object_name = 'data'
     allow_empty = False
@@ -62,21 +52,18 @@ class TagView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = TagPost.objects.get(slug=self.kwargs['slug_tag'])
-        context['title'] = f'Тег: {tag.name}'
-        context['cat_selected'] = 0
-        return context
+        return self.get_mixin_context(context, title=f'Тег: {tag.name}')
 
-def addpost(request):
-    if request.method == 'POST':
-        form = Addpostform(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('main_page')
-        else:
-            return render(request, 'woman/add_post.html', {'form': form})
-    else:
-        form = Addpostform()
-        return render(request, 'woman/add_post.html', {'form': form})
+
+class AddPost(DataMixin, FormView):
+    form_class = Addpostform
+    template_name = 'woman/add_post.html'
+    success_url = reverse_lazy('main_page')
+    title_context = 'Добавление Статьи'
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 def about(request):
